@@ -1,0 +1,147 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  Feature:
+    description: Feature defines the structure for each feature of a product
+    properties:
+      code:
+        description: the code friendly name of the feature
+        type: string
+        x-go-name: Code
+      id:
+        $ref: '#/definitions/ObjectID'
+      name:
+        description: the user friendly name of the feature
+        type: string
+        x-go-name: Name
+      type:
+        $ref: '#/definitions/FlagType'
+    required:
+    - name
+    - code
+    - type
+    type: object
+    x-go-package: github.com/serdarkalayci/goboiler/webapi/data
+  FlagType:
+    description: FlagType is the enum that enumerates the type of feature flag
+    format: int64
+    type: integer
+    x-go-package: github.com/serdarkalayci/goboiler/webapi/data
+  GenericError:
+    description: GenericError is a generic error message returned by a server
+    properties:
+      message:
+        type: string
+        x-go-name: Message
+    type: object
+    x-go-package: github.com/serdarkalayci/goboiler/webapi/handlers
+  ObjectID:
+    items:
+      format: uint8
+      type: integer
+    title: ObjectID is the BSON ObjectID type.
+    type: array
+    x-go-package: go.mongodb.org/mongo-driver/bson/primitive
+  Product:
+    description: Product defines the structure for a product
+    properties:
+      features:
+        description: the ISBNFeature list of the product
+        items:
+          $ref: '#/definitions/Feature'
+        type: array
+        x-go-name: Features
+      id:
+        $ref: '#/definitions/ObjectID'
+      name:
+        description: the name of the product
+        type: string
+        x-go-name: Name
+    required:
+    - name
+    type: object
+    x-go-package: github.com/serdarkalayci/goboiler/webapi/data
+  ValidationError:
+    description: ValidationError is a collection of validation error messages
+    properties:
+      messages:
+        items:
+          type: string
+        type: array
+        x-go-name: Messages
+    type: object
+    x-go-package: github.com/serdarkalayci/goboiler/webapi/handlers
+info:
+  description: Documentation for Details API
+  title: of Details API
+  version: 1.0.0
+paths:
+  /:
+    get:
+      description: Returns OK if there's no problem
+      operationId: index
+      responses:
+        "200":
+          $ref: '#/responses/OK'
+  /health/live:
+    get:
+      description: Return 200 if the api is up and running
+      operationId: Live
+      responses:
+        "200":
+          $ref: '#/responses/OK'
+        "404":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - Health
+  /health/ready:
+    get:
+      description: Return 200 if the api is up and running and connected to the database
+      operationId: Ready
+      responses:
+        "200":
+          $ref: '#/responses/OK'
+        "404":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - Health
+  /products/{id}:
+    get:
+      description: Return a list of Product from the database
+      operationId: getSingleProduct
+      responses:
+        "200":
+          $ref: '#/responses/ProductResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - Products
+produces:
+- application/json
+responses:
+  OK:
+    description: Generic error message returned as a string
+  ProductResponse:
+    description: Data structure representing a single product
+    schema:
+      $ref: '#/definitions/Product'
+  ProductsResponse:
+    description: A list of products
+    schema:
+      items:
+        $ref: '#/definitions/Product'
+      type: array
+  errorResponse:
+    description: Generic error message returned as a string
+    schema:
+      $ref: '#/definitions/GenericError'
+  errorValidation:
+    description: Validation errors defined as an array of strings
+    schema:
+      $ref: '#/definitions/ValidationError'
+  noContentResponse:
+    description: No content is returned by this API endpoint
+schemes:
+- http
+swagger: "2.0"
