@@ -85,10 +85,13 @@ func (order *Order) RemoveProduct(orderItem OrderItem) error {
 	if !found {
 		return errors.New("The order does not contain the Product requested")
 	}
-	if order.Items[i].ItemCount < orderItem.ItemCount {
+	if order.Items[i-1].ItemCount < orderItem.ItemCount { // There's not enough items to be removed
 		return errors.New("The order does not contain enough of the Product requested")
+	} else if order.Items[i-1].ItemCount == orderItem.ItemCount { // There's exactly the number of items to be removed
+		order.Items = append(order.Items[:i-1], order.Items[i:]...) // Remove that item from the array completely
+	} else { // There're more items than to be removed
+		order.Items[i-1].ItemCount -= orderItem.ItemCount
 	}
-	order.Items[i].ItemCount -= orderItem.ItemCount
 	newAmount := float64(orderItem.ItemCount) * orderItem.Item.Price
 	order.Customer.Rebalance(newAmount)
 	order.Total -= newAmount
