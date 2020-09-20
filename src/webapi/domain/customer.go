@@ -2,6 +2,12 @@ package domain
 
 import "errors"
 
+// CustomerRepository represents an interface for the outer layers to implement the actual low level operations
+type CustomerRepository interface {
+	Store(customer Customer)
+	Fetch(customerID string) Customer
+}
+
 // Customer defines the structure for an customer
 type Customer struct {
 	// the id of the customer

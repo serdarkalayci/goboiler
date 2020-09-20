@@ -10,13 +10,13 @@ import (
 func Test_AddProduct(t *testing.T) {
 	customer := createCustomer("Customer1", "Customer Name1", 30)
 	order := createOrder("Order1", customer)
-	product1 := createProduct("Product1", "Product One", 7.75)
+	product1 := createProduct("Product1", "Product One", 7.75, 20)
 	orderItem1 := createOrderItem(product1, 2)
 	err := order.AddProduct(orderItem1)
 	if err != nil || order.Total != 15.50 || order.Customer.Balance != 14.50 {
 		t.Errorf("Error while adding first items. Total expected: 15.50 got: %f, Customer balance expected: 14.50 got: %f", order.Total, order.Customer.Balance)
 	}
-	product2 := createProduct("Product2", "Product Two", 1.25)
+	product2 := createProduct("Product2", "Product Two", 1.25, 20)
 	orderItem2 := createOrderItem(product2, 2)
 	err = order.AddProduct(orderItem2)
 	if err != nil || order.Total != 18 || order.Customer.Balance != 12 {
@@ -35,10 +35,10 @@ func Test_AddProduct(t *testing.T) {
 func Test_RemoveProduct(t *testing.T) {
 	customer := createCustomer("Customer1", "Customer Name1", 30)
 	order := createOrder("Order1", customer)
-	product1 := createProduct("Product1", "Product One", 7.75)
+	product1 := createProduct("Product1", "Product One", 7.75, 20)
 	orderItem1 := createOrderItem(product1, 3)
 	order.AddProduct(orderItem1)
-	product2 := createProduct("Product2", "Product Two", 1.25)
+	product2 := createProduct("Product2", "Product Two", 1.25, 20)
 	orderItem2 := createOrderItem(product2, 2)
 	removeItem := createOrderItem(product1, 1)
 	err := order.RemoveProduct(removeItem)
@@ -66,14 +66,6 @@ func createOrder(id string, customer domain.Customer) domain.Order {
 		ID:       id,
 		Date:     time.Now(),
 		Customer: customer,
-	}
-}
-
-func createProduct(id string, name string, price float64) domain.Product {
-	return domain.Product{
-		ID:    id,
-		Name:  name,
-		Price: price,
 	}
 }
 
