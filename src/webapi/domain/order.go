@@ -57,6 +57,7 @@ func (order *Order) AddProduct(orderItem OrderItem) error {
 	if err != nil {
 		return errors.New("Customer balance is not enough for adding these items")
 	}
+	err = orderItem.Item.Unshelf(orderItem.ItemCount)
 	found := false
 	for i := 0; i < len(order.Items) && found == false; i++ {
 		if order.Items[i].Item.ID == orderItem.Item.ID {
@@ -92,6 +93,7 @@ func (order *Order) RemoveProduct(orderItem OrderItem) error {
 	} else { // There're more items than to be removed
 		order.Items[i-1].ItemCount -= orderItem.ItemCount
 	}
+	orderItem.Item.Shelf(orderItem.ItemCount)
 	newAmount := float64(orderItem.ItemCount) * orderItem.Item.Price
 	order.Customer.Rebalance(newAmount)
 	order.Total -= newAmount
