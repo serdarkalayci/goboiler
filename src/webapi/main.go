@@ -10,8 +10,8 @@ import (
 	openapimw "github.com/go-openapi/runtime/middleware"
 
 	"github.com/serdarkalayci/goboiler/webapi/dto"
-	"github.com/serdarkalayci/goboiler/webapi/handlers"
-	"github.com/serdarkalayci/goboiler/webapi/middleware"
+	"github.com/serdarkalayci/goboiler/webapi/interface/handlers"
+	"github.com/serdarkalayci/goboiler/webapi/interface/middleware"
 
 	"github.com/rs/zerolog"
 
@@ -43,7 +43,7 @@ func main() {
 	cfg, err := jaegercfg.FromEnv()
 	if err != nil || cfg.ServiceName == "" {
 		cfg = &jaegercfg.Configuration{
-			ServiceName: "BookInfo.Details",
+			ServiceName: "GoBoiler.WebApi",
 			Sampler: &jaegercfg.SamplerConfig{
 				Type:  jaeger.SamplerTypeConst,
 				Param: 1,
